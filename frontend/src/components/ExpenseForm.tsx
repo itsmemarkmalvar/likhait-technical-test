@@ -7,6 +7,7 @@ import { ExpenseFormData } from "../types";
 import { EXPENSE_CATEGORIES } from "../constants/categories";
 import { TextField, SelectBox, Button } from "../vibes";
 import { useExpenseForm } from "../hooks/useExpenseForm";
+import { todayString } from "../utils/expenseUtils";
 
 interface ExpenseFormProps {
   initialData?: Partial<ExpenseFormData>;
@@ -87,6 +88,7 @@ export function ExpenseForm({
         error={errors.date}
         fullWidth
         required
+        max={todayString()}
       />
 
       <div style={buttonGroupStyle}>

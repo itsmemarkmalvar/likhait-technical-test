@@ -29,6 +29,20 @@ export function formatDate(date: Date): string {
 }
 
 /**
+ * Returns YYYY-MM-DD for today (for max attribute and comparisons)
+ */
+export function todayString(): string {
+  return formatDate(new Date());
+}
+
+/**
+ * True if dateStr (YYYY-MM-DD) is after today
+ */
+export function isFutureDate(dateStr: string): boolean {
+  return dateStr > todayString();
+}
+
+/**
  * Get days in month
  */
 export function getDaysInMonth(year: number, month: number): number {

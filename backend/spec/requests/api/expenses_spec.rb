@@ -48,6 +48,25 @@ RSpec.describe "Api::Expenses", type: :request do
         expect(json["description"]).to eq("Team Lunch")
         expect(json["amount"]).to eq("150.5")
       end
+
+      it "rejects future date" do
+        future_params = {
+          expense: {
+            description: "Future expense",
+            amount: 50.00,
+            category_id: food_category.id,
+            date: 1.day.from_now
+          }
+        }
+
+        expect {
+          post "/api/expenses", params: future_params, as: :json
+        }.not_to change(Expense, :count)
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        json = JSON.parse(response.body)
+        expect(json["errors"]).to be_present
+      end
     end
 
     context "with invalid parameters" do
