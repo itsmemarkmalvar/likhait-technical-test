@@ -33,16 +33,41 @@ export async function getExpenses(
   return response.json();
 }
 
+export interface Category {
+  id: number;
+  name: string;
+}
+
 /**
  * Fetch all categories
  */
-export async function fetchCategories(): Promise<
-  Array<{ id: number; name: string }>
-> {
+export async function fetchCategories(): Promise<Category[]> {
   const response = await fetch(`${API_BASE_URL}/categories`);
   if (!response.ok) {
     throw new Error("Failed to fetch categories");
   }
+  return response.json();
+}
+
+/**
+ * Create a new category
+ */
+export async function createCategory(name: string): Promise<Category> {
+  const response = await fetch(`${API_BASE_URL}/categories`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ category: { name: name.trim() } }),
+  });
+
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}));
+    const message =
+      data?.errors?.join?.(" ") || "Failed to create category";
+    throw new Error(message);
+  }
+
   return response.json();
 }
 

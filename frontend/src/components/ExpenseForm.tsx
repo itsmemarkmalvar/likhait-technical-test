@@ -5,6 +5,7 @@
 import React from "react";
 import { ExpenseFormData } from "../types";
 import { EXPENSE_CATEGORIES } from "../constants/categories";
+import type { Category } from "../services/api";
 import { TextField, SelectBox, Button } from "../vibes";
 import { useExpenseForm } from "../hooks/useExpenseForm";
 
@@ -13,6 +14,8 @@ interface ExpenseFormProps {
   onSubmit: (data: ExpenseFormData) => Promise<void>;
   onCancel?: () => void;
   submitLabel?: string;
+  /** Categories from API; if not provided, uses built-in list */
+  categories?: Category[];
 }
 
 export function ExpenseForm({
@@ -20,6 +23,7 @@ export function ExpenseForm({
   onSubmit,
   onCancel,
   submitLabel = "Add Expense",
+  categories: apiCategories,
 }: ExpenseFormProps) {
   const { formData, errors, isSubmitting, handleChange, handleSubmit } =
     useExpenseForm({
@@ -39,10 +43,13 @@ export function ExpenseForm({
     marginTop: "0.5rem",
   };
 
-  const categoryOptions = EXPENSE_CATEGORIES.map((category) => ({
-    value: category,
-    label: category,
-  }));
+  const categoryOptions = (apiCategories?.length
+    ? apiCategories.map((c) => ({ value: c.name, label: c.name }))
+    : EXPENSE_CATEGORIES.map((category) => ({
+        value: category,
+        label: category,
+      }))
+  );
 
   return (
     <form onSubmit={handleSubmit} style={formStyle}>

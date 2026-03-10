@@ -9,11 +9,12 @@ import { getCategoryEmoji } from "../constants/categoryEmojis";
 import { COLORS } from "../constants/colors";
 import { Button, Modal, Pagination } from "../vibes";
 import { ExpenseForm } from "./ExpenseForm.tsx";
-import { deleteExpense, updateExpense } from "../services/api";
+import { deleteExpense, updateExpense, type Category } from "../services/api";
 
 interface CalendarExpenseTableProps {
   expenses: Expense[];
   onExpenseUpdated: () => void;
+  categories?: Category[];
 }
 
 const ITEMS_PER_PAGE = 10;
@@ -21,6 +22,7 @@ const ITEMS_PER_PAGE = 10;
 export function CalendarExpenseTable({
   expenses,
   onExpenseUpdated,
+  categories,
 }: CalendarExpenseTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
@@ -188,6 +190,7 @@ export function CalendarExpenseTable({
       >
         {editingExpense && (
           <ExpenseForm
+            categories={categories}
             initialData={{
               amount: editingExpense.amount.toString(),
               description: editingExpense.description,
