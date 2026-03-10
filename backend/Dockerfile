@@ -7,9 +7,9 @@ FROM ruby:$RUBY_VERSION-slim
 # Rails app lives here
 WORKDIR /rails
 
-# Install base packages
+# Install base packages (libyaml-dev required for psych gem native extension)
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential ca-certificates default-mysql-client default-libmysqlclient-dev git && \
+    apt-get install --no-install-recommends -y build-essential ca-certificates default-mysql-client default-libmysqlclient-dev git libyaml-dev && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Install application gems

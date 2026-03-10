@@ -1,5 +1,11 @@
--- Create database if not exists
+-- Create databases if not exists (development and test for RSpec)
 CREATE DATABASE IF NOT EXISTS expense_system_development CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS expense_system_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- Grant expense_user access to both databases (MySQL only grants MYSQL_DATABASE by default)
+GRANT ALL PRIVILEGES ON expense_system_development.* TO 'expense_user'@'%';
+GRANT ALL PRIVILEGES ON expense_system_test.* TO 'expense_user'@'%';
+FLUSH PRIVILEGES;
 
 USE expense_system_development;
 
