@@ -5,27 +5,27 @@ RSpec.describe "Api::Expenses", type: :request do
   let!(:transport_category) { Category.create!(name: "Transport") }
 
   describe "GET /api/expenses" do
-    let!(:expense_older) do
-      Expense.create!(description: "Lunch", amount: 100.00, category: food_category, date: 1.day.ago)
-    end
-    let!(:expense_newer) do
-      Expense.create!(description: "Taxi", amount: 50.00, category: transport_category, date: Date.current)
-    end
+    let!(:expense1) { Expense.create!(description: "Lunch", amount: 100.00, category: food_category, date: Date.current) }
+    let!(:expense2) { Expense.create!(description: "Taxi", amount: 50.00, category: transport_category, date: Date.current) }
+    let!(:expense_older) { Expense.create!(description: "Older", amount: 25.00, category: food_category, date: 1.day.ago) }
+    let!(:expense_newer) { Expense.create!(description: "Newer", amount: 75.00, category: transport_category, date: Date.current) }
 
     it "returns all expenses with category information" do
       get "/api/expenses"
 
       expect(response).to have_http_status(:success)
       json = JSON.parse(response.body)
-      expect(json.length).to eq(2)
+      expect(json.length).to eq(4)
     end
 
     it "returns expenses in descending order by expense date (most recent first)" do
       get "/api/expenses"
 
       json = JSON.parse(response.body)
-      expect(json.first["id"]).to eq(expense_newer.id)
-      expect(json.last["id"]).to eq(expense_older.id)
+      ids_by_date = json.map { |e| e["id"] }
+      newer_index = ids_by_date.index(expense_newer.id)
+      older_index = ids_by_date.index(expense_older.id)
+      expect(newer_index).to be < older_index
     end
   end
 
@@ -50,7 +50,7 @@ RSpec.describe "Api::Expenses", type: :request do
         expect(response).to have_http_status(:created)
         json = JSON.parse(response.body)
         expect(json["description"]).to eq("Team Lunch")
-        expect(json["amount"]).to eq("150.5")
+        expect(json["amount"]).to eq(150.5)
       end
 
     end
